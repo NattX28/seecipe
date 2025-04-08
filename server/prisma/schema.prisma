@@ -1,0 +1,164 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  username       String   @unique
+  email          String   @unique
+  passwordHash   String
+  profilePicture String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  recipes    Recipe[]
+  ratings    Rating[]
+  comments   Comment[]
+  favorites  Favorite[]
+  followedBy Follow[]   @relation("UserFollowers")
+  following  Follow[]   @relation("UserFollowing")
+
+  @@map("user")
+}
+
+model Recipe {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  title        String
+  description  String?
+  prepTime     Int? // in minutes
+  cookTime     Int? // In minutes
+  servings     Int?
+  instructions String   @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  user        User         @relation(fields: [userId], references: [id])
+  ingredients Ingredient[]
+  ratings     Rating[]
+  comments    Comment[]
+  images      Image[]
+  tags        RecipeTag[]
+  Favorite    Favorite[]
+
+  @@map("recipe")
+}
+
+model Ingredient {
+  id       Int     @id @default(autoincrement())
+  recipeId Int
+  name     String
+  quantity String?
+  unit     String?
+  notes    String?
+
+  // Relations
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("ingredient")
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  // Relations
+  recipes RecipeTag[]
+
+  @@map("tag")
+}
+
+model RecipeTag {
+  recipeId Int
+  tagId    Int
+
+  // Relations
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([recipeId, tagId])
+  @@map("recipe_tag")
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  recipeId  Int
+  userId    Int
+  score     Int
+  review    String?  @db.Text
+  createdAt DateTime @default(now())
+
+  // relation
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId]) // One rating per user per recipe
+  @@map("rating")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  recipeId  Int
+  userId    Int
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  // Relations
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("comment")
+}
+
+model Favorite {
+  userId    Int
+  recipeId  Int
+  createdAt DateTime @default(now())
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, recipeId])
+  @@map("favorite")
+}
+
+model Follow {
+  followerId  Int
+  followingId Int
+  createdAt   DateTime @default(now())
+
+  // Relations
+  follower  User @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@map("follow")
+}
+
+model Image {
+  id           Int     @id @default(autoincrement())
+  recipeId     Int
+  url          String
+  caption      String?
+  displayOrder Int     @default(0)
+
+  // Relations
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("image")
+}
