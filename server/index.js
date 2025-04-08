@@ -4,6 +4,7 @@ const { readdirSync } = require("fs");
 const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(
     limit: "10mb",
   })
 );
+app.use(cookieParser());
 
 readdirSync("./src/routes").forEach((file) => {
   const route = require(path.join(__dirname, "src", "routes", file));
