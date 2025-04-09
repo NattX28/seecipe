@@ -42,7 +42,7 @@ model Recipe {
   prepTime     Int? // in minutes
   cookTime     Int? // In minutes
   servings     Int?
-  instructions String   @db.Text
+  instructions Json?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -53,7 +53,7 @@ model Recipe {
   comments    Comment[]
   images      Image[]
   tags        RecipeTag[]
-  Favorite    Favorite[]
+  favorites   Favorite[]
 
   @@map("recipe")
 }
