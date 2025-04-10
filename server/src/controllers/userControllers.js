@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const getProfile = async (req, res) => {
   try {
-    const userId = req.params.userId || req.user.id;
+    const userId = req.query.id || req.user.id;
 
     if (!userId) {
       return res.status(400).json({ error: "User ID not found" });
@@ -124,6 +124,8 @@ const getProfile = async (req, res) => {
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    const isOwnProfile = parseInt(userId) === parseInt(req.user.id);
+
     // Format recipes and favorites for card view
     const formattedRecipes = formatRecipesForCards(user.recipes);
     const formattedFavorites = formatRecipesForCards(
@@ -140,6 +142,7 @@ const getProfile = async (req, res) => {
       followingCount: user.following.length,
       recipes: formattedRecipes,
       favorites: formattedFavorites,
+      isOwnProfile: isOwnProfile,
     });
   } catch (err) {
     console.error("Error fetching profile:", err);
