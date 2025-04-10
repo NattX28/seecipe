@@ -57,7 +57,7 @@ const login = async (req, res) => {
 
     // user exist in database
     // give user token
-    const token = createToken(user.id);
+    const token = createToken(user);
 
     // Set httpOnly cookie
     res.cookie("token", token, {
