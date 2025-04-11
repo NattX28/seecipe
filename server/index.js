@@ -15,6 +15,7 @@ app.use(
   })
 );
 app.use(cookieParser());
+app.use(express.json());
 
 readdirSync("./src/routes").forEach((file) => {
   const route = require(path.join(__dirname, "src", "routes", file));

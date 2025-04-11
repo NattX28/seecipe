@@ -150,4 +150,70 @@ const getProfile = async (req, res) => {
   }
 };
 
-module.exports = { getProfile };
+const followUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const followerUserId = req.user.id;
+    const followingUserId = parseInt(id);
+
+    // can't follow own
+    if (followerUserId === followingUserId)
+      return res.status(400).json({ message: "You can't following yourself" });
+
+    const userExists = await prisma.user.findUnique({
+      where: {
+        id: followingUserId,
+      },
+    });
+
+    if (!userExists) return res.status(404).json({ message: "User not found" });
+
+    // Check if already following
+    const existingFollow = await prisma.follow.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId: followerUserId,
+          followingId: followingUserId,
+        },
+      },
+    });
+
+    // If already following, unfollow the user
+    if (existingFollow) {
+      await prisma.follow.delete({
+        where: {
+          followerId_followingId: {
+            followerId: followerUserId,
+            followingId: followingUserId,
+          },
+        },
+      });
+
+      return res.status(200).json({
+        message: "Successfully unfollowed user",
+        isFollowing: false,
+      });
+    }
+
+    // Create follow relationship
+    const follow = await prisma.follow.create({
+      data: {
+        followerId: followerUserId,
+        followingId: followingUserId,
+      },
+    });
+
+    res.status(200).json({
+      message: "Successfully followed user",
+      data: follow,
+      isFollowing: true,
+    });
+  } catch (err) {
+    console.error("Error toggling follow status:", err);
+    res
+      .status(500)
+      .json({ message: "Error updating follow status", error: err.message });
+  }
+};
+
+module.exports = { getProfile, followUser };

@@ -5,6 +5,7 @@ const {
 } = require("../services/recipeServices");
 const prisma = new PrismaClient();
 
+// create recipe
 const createRecipe = async (req, res) => {
   const {
     userId,
@@ -93,6 +94,7 @@ const createRecipe = async (req, res) => {
   }
 };
 
+//get recipe (pagination)
 const getAllRecipes = async (req, res) => {
   const {
     page = 1,
@@ -216,6 +218,7 @@ const getAllRecipes = async (req, res) => {
   }
 };
 
+// get recipe by id
 const getRecipeById = async (req, res) => {
   const { id } = req.params;
 
@@ -300,4 +303,134 @@ const getRecipeById = async (req, res) => {
   }
 };
 
-module.exports = { createRecipe, getAllRecipes, getRecipeById };
+// rate a recipe
+const rateRecipe = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const { review, score } = req.body;
+
+    // validate input (limit 5)
+    if (!score || score < 1 || score > 5) {
+      return res.status(400).json({ message: "Score must be between 1 and 5" });
+    }
+
+    // Create or update the rating
+    const rating = await prisma.rating.upsert({
+      where: {
+        userId_recipeId: {
+          userId: userId,
+          recipeId: parseInt(id),
+        },
+      },
+      update: {
+        score,
+        review,
+      },
+      create: {
+        userId,
+        recipeId: parseInt(id),
+        score,
+        review,
+      },
+    });
+
+    res
+      .status(200)
+      .json({ message: "rating recipe successfully", data: rating });
+  } catch (err) {
+    console.error("Error rating recipe: ", err);
+    res
+      .status(500)
+      .json({ message: "Error rating recipe", error: err.message });
+  }
+};
+
+const commentOnRecipe = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const { content } = req.body;
+
+    if (!content)
+      return res.status(400).json({ message: "Comment content is required" });
+
+    const comment = await prisma.comment.create({
+      data: {
+        userId,
+        recipeId: parseInt(id),
+        content,
+      },
+    });
+
+    res
+      .status(200)
+      .json({ message: "Comment on recipe successfully", data: comment });
+  } catch (err) {
+    console.error("Error commenting on recipe: ", err);
+    res
+      .status(500)
+      .json({ message: "Error commenting on recipe", error: err.message });
+  }
+};
+
+// Save recipe to favorites
+const saveToFavorites = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const recipeId = parseInt(id);
+
+    const existingFavorite = await prisma.favorite.findUnique({
+      where: {
+        userId_recipeId: {
+          userId,
+          recipeId,
+        },
+      },
+    });
+
+    // if already a favorite, remove it.
+    if (existingFavorite) {
+      await prisma.favorite.delete({
+        userId_recipeId: {
+          userId,
+          recipeId,
+        },
+      });
+
+      return res.status(200).json({
+        message: "Recipe remove from favorites successfully",
+        data: null,
+        isFavorite: false,
+      });
+    }
+
+    const favorite = await prisma.favorite.create({
+      data: {
+        recipeId,
+        userId,
+      },
+    });
+
+    res.status(200).json({
+      message: "Add recipe to favorites successfully",
+      data: favorite,
+      isFavorite: true,
+    });
+  } catch (err) {
+    console.error("Error toggling favorite status: ", err);
+    res
+      .status(500)
+      .json({ message: "Error updating favorites", error: err.message });
+  }
+};
+
+module.exports = {
+  createRecipe,
+  getAllRecipes,
+  getRecipeById,
+  rateRecipe,
+  commentOnRecipe,
+  saveToFavorites,
+};
