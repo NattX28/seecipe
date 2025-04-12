@@ -4,8 +4,8 @@ const notiService = require("../services/notificationServices");
 const getNotifications = async (req, res) => {
   try {
     const userId = req.user.id;
-    const page = parseInt(res.query.page) || 1;
-    const limit = parseInt(res.query.limit) || 20;
+    const page = parseInt(req.query.page) || 1; // Fixed: res.query -> req.query
+    const limit = parseInt(req.query.limit) || 20;
 
     const result = await notiService.getUserNotifications(userId, page, limit);
     return res.status(200).json({
@@ -17,13 +17,15 @@ const getNotifications = async (req, res) => {
   }
 };
 
-// mark notifications as read
+// Mark notifications as read
 const markAsRead = async (req, res) => {
   try {
     const userId = req.user.id;
     const { notificationIds } = req.body;
 
     await notiService.markNotificationsAsRead(userId, notificationIds);
+
+    return res.status(200).json({ message: "Notifications marked as read" });
   } catch (err) {
     console.log("Error in markAsRead controller:", err);
     return res
@@ -32,7 +34,7 @@ const markAsRead = async (req, res) => {
   }
 };
 
-// delete a notification
+// Delete a notification
 const deleteNotification = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -47,7 +49,7 @@ const deleteNotification = async (req, res) => {
   }
 };
 
-// get unread noti count
+// Get unread notification count
 const getUnreadCount = async (req, res) => {
   try {
     const userId = req.user.id;

@@ -310,6 +310,7 @@ const rateRecipe = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
     const { review, score } = req.body;
+    const recipeId = parseInt(id);
 
     // validate input (limit 5)
     if (!score || score < 1 || score > 5) {
@@ -321,7 +322,7 @@ const rateRecipe = async (req, res) => {
       where: {
         userId_recipeId: {
           userId: userId,
-          recipeId: parseInt(id),
+          recipeId: recipeId,
         },
       },
       update: {
@@ -330,17 +331,18 @@ const rateRecipe = async (req, res) => {
       },
       create: {
         userId,
-        recipeId: parseInt(id),
+        recipeId: recipeId,
         score,
         review,
       },
     });
 
-    await notiService.createLikeNotification(userId, parseInt(id));
+    // Send notification to recipe owner
+    await notiService.createLikeNotification(userId, recipeId);
 
     res
       .status(200)
-      .json({ message: "rating recipe successfully", data: rating });
+      .json({ message: "Rating recipe successfully", data: rating });
   } catch (err) {
     console.error("Error rating recipe: ", err);
     res
@@ -354,6 +356,7 @@ const commentOnRecipe = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
     const { content } = req.body;
+    const recipeId = parseInt(id);
 
     if (!content)
       return res.status(400).json({ message: "Comment content is required" });
@@ -361,16 +364,13 @@ const commentOnRecipe = async (req, res) => {
     const comment = await prisma.comment.create({
       data: {
         userId,
-        recipeId: parseInt(id),
+        recipeId: recipeId,
         content,
       },
     });
 
-    await notiService.createCommentNotification(
-      userId,
-      parseInt(id),
-      comment.id
-    );
+    // Send notification to recipe owner
+    await notiService.createCommentNotification(userId, recipeId, comment.id);
 
     res
       .status(200)

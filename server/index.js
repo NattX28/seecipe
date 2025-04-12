@@ -1,12 +1,14 @@
 const PORT = 5000;
 const express = require("express");
+const app = express();
 const { readdirSync } = require("fs");
 const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-
-const app = express();
+const http = require("http");
+const server = http.createServer(app);
+const socketService = require("./socket"); // Import the socket module
 
 app.use(cors());
 app.use(
@@ -17,9 +19,17 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
+// Initialize the socket server with our HTTP server
+socketService.initSocketServer(server);
+
 readdirSync("./src/routes").forEach((file) => {
   const route = require(path.join(__dirname, "src", "routes", file));
   app.use("/", route);
 });
 
-app.listen(PORT, console.log(`server run on port ${PORT} Success`));
+// Use server.listen instead of app.listen
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT} successfully`);
+});
+
+module.exports = app; // Export only the Express app if needed

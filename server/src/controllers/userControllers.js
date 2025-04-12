@@ -204,10 +204,7 @@ const followUser = async (req, res) => {
       },
     });
 
-    await notiService.createFollowNotificaation(
-      followerUserId,
-      followingUserId
-    );
+    await notiService.createFollowNotification(followerUserId, followingUserId);
 
     res.status(200).json({
       message: "Successfully followed user",
