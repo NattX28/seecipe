@@ -24,12 +24,14 @@ model User {
   updatedAt      DateTime @updatedAt
 
   // Relations
-  recipes    Recipe[]
-  ratings    Rating[]
-  comments   Comment[]
-  favorites  Favorite[]
-  followedBy Follow[]   @relation("UserFollowers")
-  following  Follow[]   @relation("UserFollowing")
+  recipes                Recipe[]
+  ratings                Rating[]
+  comments               Comment[]
+  favorites              Favorite[]
+  followedBy             Follow[]       @relation("UserFollowers")
+  following              Follow[]       @relation("UserFollowing")
+  notifications          Notification[]
+  notificationsTriggered Notification[] @relation("NotificationActor")
 
   @@map("user")
 }
@@ -47,13 +49,14 @@ model Recipe {
   updatedAt    DateTime @updatedAt
 
   // Relations
-  user        User         @relation(fields: [userId], references: [id])
-  ingredients Ingredient[]
-  ratings     Rating[]
-  comments    Comment[]
-  images      Image[]
-  tags        RecipeTag[]
-  favorites   Favorite[]
+  user          User           @relation(fields: [userId], references: [id])
+  ingredients   Ingredient[]
+  ratings       Rating[]
+  comments      Comment[]
+  images        Image[]
+  tags          RecipeTag[]
+  favorites     Favorite[]
+  notifications Notification[]
 
   @@map("recipe")
 }
@@ -118,8 +121,9 @@ model Comment {
   createdAt DateTime @default(now())
 
   // Relations
-  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe        Recipe         @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notifications Notification[]
 
   @@map("comment")
 }
@@ -161,4 +165,24 @@ model Image {
   recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
   @@map("image")
+}
+
+// noti
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int // user who receives the notification
+  actorId   Int // User who performed the action
+  type      String // "like", "comment", "follow"
+  recipeId  Int? // relavant for likes and comments
+  commentId Int? // relavant for comment notifications
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relations
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  actor   User     @relation("NotificationActor", fields: [actorId], references: [id], onDelete: Cascade)
+  recipe  Recipe?  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@map("notification")
 }
