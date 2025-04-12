@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const { formatRecipesForCards } = require("../services/recipeServices");
+const notiService = require("../services/notificationServices");
 const prisma = new PrismaClient();
 
 const getProfile = async (req, res) => {
@@ -202,6 +203,11 @@ const followUser = async (req, res) => {
         followingId: followingUserId,
       },
     });
+
+    await notiService.createFollowNotificaation(
+      followerUserId,
+      followingUserId
+    );
 
     res.status(200).json({
       message: "Successfully followed user",

@@ -3,6 +3,7 @@ const {
   formatRecipesForCards,
   formatRecipeDetail,
 } = require("../services/recipeServices");
+const notiService = require("../services/notificationServices");
 const prisma = new PrismaClient();
 
 // create recipe
@@ -335,6 +336,8 @@ const rateRecipe = async (req, res) => {
       },
     });
 
+    await notiService.createLikeNotification(userId, parseInt(id));
+
     res
       .status(200)
       .json({ message: "rating recipe successfully", data: rating });
@@ -362,6 +365,12 @@ const commentOnRecipe = async (req, res) => {
         content,
       },
     });
+
+    await notiService.createCommentNotification(
+      userId,
+      parseInt(id),
+      comment.id
+    );
 
     res
       .status(200)
