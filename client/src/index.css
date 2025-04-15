@@ -1,11 +1,44 @@
 @import "tailwindcss";
+@plugin "daisyui";
 
 @layer base {
   html,
   body {
-    @apply bg-gray-50 text-gray-800 dark:bg-gray-950 dark:text-gray-100;
     font-family: "Inter", "Anuphan", sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
+    background-color: #fff5e4;
+    color: #3d3d3d;
+  }
+}
+
+@layer components {
+  /* Background */
+  .bg-main {
+    background-color: #fff5e4;
+  }
+  .bg-second {
+    background-color: #ffa725;
+  }
+  .bg-third {
+    background-color: #3d3d3d;
+  }
+  .bg-forth {
+    background-color: #f7f7f7;
+  }
+  .bg-fifth {
+    background-color: #bbbbbb;
+  }
+
+  /* Text */
+  .text-main-color {
+    color: #3d3d3d;
+  }
+  .text-second-color {
+    color: #fff;
+  }
+  .text-third-color {
+    color: #ffa725;
+  }
+  .text-forth-color {
+    color: #bbbbbb;
   }
 }
