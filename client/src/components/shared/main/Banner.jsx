@@ -17,7 +17,7 @@ const Banner = () => {
         modules={[Autoplay]}
         className="w-full rounded-lg">
         <SwiperSlide>
-          <div className="w-full h-[400px]">
+          <div className="w-full h-[320px]">
             <img
               src="/images/grilledsalmonsteaks.jpg"
               alt="salmon"
@@ -26,7 +26,7 @@ const Banner = () => {
           </div>
         </SwiperSlide>
         <SwiperSlide>
-          <div className="w-full h-[400px]">
+          <div className="w-full h-[320px]">
             <img
               src="/images/grilledsalmonsteaks.jpg"
               alt="salmon"
