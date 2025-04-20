@@ -1,4 +1,4 @@
-const Button = ({ text, color = "#ffa725", classOther = "" }) => {
+const ButtonMod = ({ text, color = "#ffa725", classOther = "" }) => {
   return (
     <div
       className={`btn rounded-full text-white ${classOther}`}
@@ -7,4 +7,4 @@ const Button = ({ text, color = "#ffa725", classOther = "" }) => {
     </div>
   );
 };
-export default Button;
+export default ButtonMod;
