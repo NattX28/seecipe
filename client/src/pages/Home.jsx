@@ -1,4 +1,5 @@
 import CardContainer from "../components/shared/main/CardContainer";
+import LoginModal from "../components/shared/main/LoginModal";
 import TagContainer from "../components/shared/main/TagContainer";
 import Banner from "./../components/shared/main/Banner";
 
@@ -14,6 +15,8 @@ const Home = () => {
       <TagContainer />
 
       <CardContainer />
+
+      <LoginModal />
     </div>
   );
 };
