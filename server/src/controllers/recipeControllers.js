@@ -3,6 +3,7 @@ const {
   formatRecipesForCards,
   formatRecipeDetail,
 } = require("../services/recipeServices");
+const { uploadImage } = require("../services/uploadServices");
 const notiService = require("../services/notificationServices");
 const prisma = new PrismaClient();
 
@@ -21,7 +22,29 @@ const createRecipe = async (req, res) => {
     images,
   } = req.body;
 
+  const parsedIngredients =
+    typeof ingredients === "string" ? JSON.parse(ingredients) : ingredients;
+
+  const parsedInstructions =
+    typeof instructions === "string" ? JSON.parse(instructions) : instructions;
+
+  const parsedTags = typeof tags === "string" ? JSON.parse(tags) : tags;
+
   try {
+    const imageUploads = [];
+    if (req.files && req.files.length > 0) {
+      for (let i = 0; i < req.files.length; i++) {
+        const file = req.files[i];
+        const imageUrl = await uploadImage(file);
+
+        imageUploads.push({
+          url: imageUrl,
+          caption: req.body[`caption_${i}` || null],
+          displayOrder: i,
+        });
+      }
+    }
+
     const newRecipe = await prisma.recipe.create({
       data: {
         userId,
@@ -40,11 +63,7 @@ const createRecipe = async (req, res) => {
           })),
         },
         images: {
-          create: images.map((image) => ({
-            url: image.url,
-            caption: image.caption || null,
-            displayOrder: image.displayOrder || 0,
-          })),
+          create: imageUploads,
         },
       },
     });
@@ -70,22 +89,22 @@ const createRecipe = async (req, res) => {
     }
 
     // get recipe data with all relation for send back
-    const recipeWithRelations = await prisma.recipe.findUnique({
-      where: { id: newRecipe.id },
-      include: {
-        ingredients: true,
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-        images: true,
-      },
-    });
+    // const recipeWithRelations = await prisma.recipe.findUnique({
+    //   where: { id: newRecipe.id },
+    //   include: {
+    //     ingredients: true,
+    //     tags: {
+    //       include: {
+    //         tag: true,
+    //       },
+    //     },
+    //     images: true,
+    //   },
+    // });
 
     res.status(201).json({
       message: "Recipe created successfully",
-      data: recipeWithRelations,
+      data: newRecipe,
     });
   } catch (err) {
     console.error(err);

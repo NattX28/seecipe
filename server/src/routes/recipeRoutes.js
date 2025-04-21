@@ -11,8 +11,16 @@ const {
   getTagById,
 } = require("../controllers/recipeControllers");
 const { authMiddleware } = require("../middlewares/middlewares");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-router.post("/recipes", createRecipe);
+router.post(
+  "/recipes",
+  authMiddleware,
+  upload.array("images", 5),
+  createRecipe
+);
 router.get("/recipes", getAllRecipes);
 router.get("/recipes/:id", getRecipeById);
 router.post("/recipes/:id/rate", authMiddleware, rateRecipe);

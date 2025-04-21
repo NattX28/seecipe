@@ -1,5 +1,10 @@
 const formatRecipesForCards = (recipes) => {
   return recipes.map((recipe) => {
+    const imageUrl =
+      recipe.images && recipe.images.length > 0
+        ? recipe.images[0].url
+        : "/placeholder-recipe.jpg";
+
     // calculate raing
     const totalScore = recipe.ratings.reduce(
       (sum, rating) => sum + rating.score,
@@ -25,6 +30,7 @@ const formatRecipesForCards = (recipes) => {
         count: recipe._count.ratings,
       },
       favoriteCount: recipe._count.favorites,
+      image: imageUrl,
     };
   });
 };
