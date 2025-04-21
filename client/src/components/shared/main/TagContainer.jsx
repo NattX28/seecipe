@@ -1,15 +1,22 @@
+import { useEffect, useState } from "react";
 import { useRecipeStore } from "../../../store/recipeStore";
+import { getAllTags } from "../../../api/recipe";
 
 const TagContainer = () => {
   const { selectedTags, setSelectedTags, fetchRecipes } = useRecipeStore();
-  const availableTags = [
-    "cake",
-    "Vegetarian",
-    "Quick",
-    "Dessert",
-    "Breakfast",
-    "Main Course",
-  ];
+  const [availableTags, setAvailableTags] = useState([]);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const tags = await getAllTags();
+        setAvailableTags(tags);
+      } catch (error) {
+        console.error("Failed to fetch tags:", error);
+      }
+    };
+    fetchTags();
+  }, []);
 
   const toggleTag = (tagName) => {
     const isSelected = selectedTags.includes(tagName);

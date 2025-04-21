@@ -435,6 +435,54 @@ const saveToFavorites = async (req, res) => {
   }
 };
 
+const getAllTags = async (req, res) => {
+  try {
+    const tags = await prisma.tag.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    res.status(200).json({
+      message: "Get all tag successfully",
+      data: tags,
+    });
+  } catch (err) {
+    console.log("Error get all tag: ", err);
+    res.status(500).json({ message: "Error get all tag", error: err.message });
+  }
+};
+
+const getTagById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const tag = await prisma.tag.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+      include: {
+        recipes: {
+          include: {
+            recipe: true,
+          },
+        },
+      },
+    });
+
+    if (!tag) {
+      return res.status(404).json({ message: "Tag not found" });
+    }
+
+    res.status(200).json(tag);
+  } catch (err) {
+    console.log("Error get tag by id: ", err);
+    res
+      .status(500)
+      .json({ message: "Error get tag by id", error: err.message });
+  }
+};
+
 module.exports = {
   createRecipe,
   getAllRecipes,
@@ -442,4 +490,6 @@ module.exports = {
   rateRecipe,
   commentOnRecipe,
   saveToFavorites,
+  getAllTags,
+  getTagById,
 };

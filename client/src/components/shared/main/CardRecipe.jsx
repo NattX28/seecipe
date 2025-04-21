@@ -60,7 +60,9 @@ const CardRecipe = ({
         </div>
         <div className="flex items-center gap-4">
           <span>{user}</span>
-          <Tag size="sm" />
+          {tags.map((tag) => (
+            <Tag tagName={tag.name} size="sm" />
+          ))}
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
@@ -109,8 +111,8 @@ const CardRecipe = ({
       </div>
       <figure>
         <img
-          src="/images/grilledsalmonsteaks.jpg"
-          alt="Shoes"
+          src={image}
+          alt={image}
           className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
         />
       </figure>

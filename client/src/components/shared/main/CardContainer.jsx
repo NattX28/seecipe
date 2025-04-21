@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import CardRecipe from "./CardRecipe";
 import ReactPaginate from "react-paginate";
 import { useRecipeStore } from "../../../store/recipeStore";
-const recipes = Array.from({ length: 25 });
 
 const CardContainer = () => {
   const { recipes, pagination, loading, error, setPage, fetchRecipes } =
@@ -29,7 +28,7 @@ const CardContainer = () => {
             size="md"
             title={recipe.title}
             user={recipe.user?.username}
-            tags={recipe.tags?.map((t) => t.tag.name)}
+            tags={recipe.tags?.map((tag) => tag)}
             rating={recipe.averageRating}
             cookTime={recipe.cookTime}
             servings={recipe.servings}
