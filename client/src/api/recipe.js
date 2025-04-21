@@ -1,4 +1,3 @@
-import axios from "axios";
 import api from "./axios";
 
 export const getAllRecipes = async (params = {}) => {
@@ -37,7 +36,7 @@ export const getAllRecipes = async (params = {}) => {
 export const getAllTags = async () => {
   try {
     const response = await api.get("/tags");
-    return response.data;
+    return response.data.data;
   } catch (err) {
     console.log("Error get all tag");
     throw err;

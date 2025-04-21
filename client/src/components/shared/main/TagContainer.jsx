@@ -3,14 +3,16 @@ import { useRecipeStore } from "../../../store/recipeStore";
 import { getAllTags } from "../../../api/recipe";
 
 const TagContainer = () => {
-  const { selectedTags, setSelectedTags, fetchRecipes } = useRecipeStore();
+  const { selectedTags, setSelectedTags } = useRecipeStore();
   const [availableTags, setAvailableTags] = useState([]);
 
   useEffect(() => {
     const fetchTags = async () => {
       try {
         const tags = await getAllTags();
-        setAvailableTags(tags);
+
+        const tagNames = tags.map((tag) => tag.name); // use only name
+        setAvailableTags(tagNames);
       } catch (error) {
         console.error("Failed to fetch tags:", error);
       }
