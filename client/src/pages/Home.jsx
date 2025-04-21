@@ -1,9 +1,17 @@
+import { useEffect } from "react";
 import CardContainer from "../components/shared/main/CardContainer";
 import LoginModal from "../components/shared/main/LoginModal";
 import TagContainer from "../components/shared/main/TagContainer";
+import { useRecipeStore } from "../store/recipeStore";
 import Banner from "./../components/shared/main/Banner";
 
 const Home = () => {
+  const { fetchRecipes } = useRecipeStore();
+
+  useEffect(() => {
+    fetchRecipes();
+  }, []);
+
   return (
     <div className="w-full flex-grow">
       <Banner />

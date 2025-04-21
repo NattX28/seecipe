@@ -6,7 +6,7 @@ const formatRecipesForCards = (recipes) => {
       0
     );
     const avgRating =
-      recipe.ratings.length > 0 ? totalScore / recipe.rating.length : 0;
+      recipe.ratings.length > 0 ? totalScore / recipe.ratings.length : 0;
 
     // adjust tags structure for easy to use
     const simplifiedTags = recipe.tags.map((item) => item.tag);

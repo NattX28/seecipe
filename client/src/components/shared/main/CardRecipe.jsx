@@ -28,7 +28,7 @@ const CardRecipe = ({
     <div className="card bg-base-100 w-full shadow-sm rounded-4xl h-96 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer ">
       <div className="card-body gap-1">
         <div className="flex w-full justify-between">
-          <h2 className="card-title">Salmon bake</h2>
+          <h2 className="card-title">{title}</h2>
           <div className="flex items-center gap-2">
             {/* share icon */}
             <svg
@@ -59,7 +59,7 @@ const CardRecipe = ({
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <span>userloveFish001</span>
+          <span>{user}</span>
           <Tag size="sm" />
         </div>
         <div className="flex items-center gap-4">
@@ -76,7 +76,7 @@ const CardRecipe = ({
                 clip-rule="evenodd"
               />
             </svg>
-            <span>4.8</span>
+            <span>{rating}</span>
           </div>
           <div className="flex items-center gap-2">
             {/* cook icon */}
@@ -91,7 +91,7 @@ const CardRecipe = ({
                 clip-rule="evenodd"
               />
             </svg>
-            <span>25 mins</span>
+            <span>{cookTime} mins</span>
           </div>
           <div className="flex items-center gap-2">
             {/* servings icon */}
@@ -103,7 +103,7 @@ const CardRecipe = ({
               <path d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM17.25 19.128l-.001.144a2.25 2.25 0 0 1-.233.96 10.088 10.088 0 0 0 5.06-1.01.75.75 0 0 0 .42-.643 4.875 4.875 0 0 0-6.957-4.611 8.586 8.586 0 0 1 1.71 5.157v.003Z" />
             </svg>
 
-            <span>4</span>
+            <span>{servings}</span>
           </div>
         </div>
       </div>

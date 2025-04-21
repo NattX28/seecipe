@@ -1,30 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CardRecipe from "./CardRecipe";
 import ReactPaginate from "react-paginate";
+import { useRecipeStore } from "../../../store/recipeStore";
 const recipes = Array.from({ length: 25 });
 
 const CardContainer = () => {
-  const itemsPerPage = 6;
-  const [currentpage, setCurrentPage] = useState(0);
+  const { recipes, pagination, loading, error, setPage, fetchRecipes } =
+    useRecipeStore();
 
-  const offset = currentpage * itemsPerPage;
-  const currentItems = recipes.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(recipes.length / itemsPerPage);
+  useEffect(() => {
+    fetchRecipes();
+  }, [pagination.page]);
 
   const handlePageClick = (event) => {
-    console.log("Page clicked:", event.selected);
-    setCurrentPage(event.selected);
+    setPage(event.selected + 1);
   };
 
-  // Calculate current showing range
-  const startItem = offset + 1;
-  const endItem = Math.min(offset + itemsPerPage, recipes.length);
+  if (loading)
+    return <div className="pt-16 text-center">Loading recipes...</div>;
+  if (error) return <div className="pt-16 text-center text-error">{error}</div>;
 
   return (
     <div className="pt-16">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6 lg:gap-8">
-        {currentItems.map((_, index) => (
-          <CardRecipe key={index} size="md" />
+        {recipes.map((recipe, index) => (
+          <CardRecipe
+            key={recipe.id || index}
+            size="md"
+            title={recipe.title}
+            user={recipe.user?.username}
+            tags={recipe.tags?.map((t) => t.tag.name)}
+            rating={recipe.averageRating}
+            cookTime={recipe.cookTime}
+            servings={recipe.servings}
+            image={recipe.images?.[0].url}
+          />
         ))}
       </div>
 
@@ -32,7 +42,12 @@ const CardContainer = () => {
       <div className="flex flex-col items-center mt-8">
         {/* Showing page indicator - made smaller */}
         <div className="text-center mb-2 text-xs text-base-content/70">
-          Showing {startItem} to {endItem} of {recipes.length} recipes
+          Showing{" "}
+          {pagination.page > 0
+            ? (pagination.page - 1) * pagination.limit + 1
+            : 0}{" "}
+          to {Math.min(pagination.page * pagination.limit, pagination.total)} of{" "}
+          {pagination.total} recipes
         </div>
 
         {/* Smaller pagination controls */}
@@ -41,8 +56,8 @@ const CardContainer = () => {
           nextLabel="»"
           previousLabel="«"
           onPageChange={handlePageClick}
-          pageCount={pageCount}
-          forcePage={currentpage}
+          pageCount={pagination.totalPages}
+          forcePage={pagination.page - 1}
           containerClassName="join"
           pageClassName="join-item btn btn-sm"
           pageLinkClassName="flex items-center justify-center w-full h-full"
@@ -60,7 +75,7 @@ const CardContainer = () => {
 
         {/* Current page indicator - made smaller */}
         <div className="text-center mt-2 text-xs text-base-content/70">
-          Page {currentpage + 1} of {pageCount}
+          Page {pagination.page} of {pagination.totalPages}
         </div>
       </div>
     </div>
