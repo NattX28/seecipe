@@ -32,7 +32,7 @@ const CardContainer = () => {
             rating={recipe.averageRating}
             cookTime={recipe.cookTime}
             servings={recipe.servings}
-            image={recipe.images?.[0].url}
+            image={recipe.mainImage || "/placeholder-recipe.jpg"}
           />
         ))}
       </div>

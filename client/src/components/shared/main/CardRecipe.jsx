@@ -112,7 +112,7 @@ const CardRecipe = ({
       <figure>
         <img
           src={image}
-          alt={image}
+          alt={title}
           className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
         />
       </figure>

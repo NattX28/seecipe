@@ -19,9 +19,9 @@ const createRecipe = async (req, res) => {
     instructions, // This will be an array of instructions
     ingredients,
     tags,
-    images,
   } = req.body;
 
+  // Parse JSON strings if data is sent as form data
   const parsedIngredients =
     typeof ingredients === "string" ? JSON.parse(ingredients) : ingredients;
 
@@ -44,18 +44,19 @@ const createRecipe = async (req, res) => {
         });
       }
     }
+    console.log("Image URLs to be saved:", imageUploads);
 
     const newRecipe = await prisma.recipe.create({
       data: {
-        userId,
+        userId: parseInt(userId),
         title,
         description,
-        prepTime,
-        cookTime,
-        servings,
-        instructions, // Store the array directly in the database
+        prepTime: parseInt(prepTime),
+        cookTime: parseInt(cookTime),
+        servings: parseInt(servings),
+        instructions: parsedInstructions,
         ingredients: {
-          create: ingredients.map((ingredient) => ({
+          create: parsedIngredients.map((ingredient) => ({
             name: ingredient.name,
             quantity: ingredient.quantity,
             unit: ingredient.unit,
@@ -69,23 +70,30 @@ const createRecipe = async (req, res) => {
     });
 
     // handle tags isolate
-    if (tags && tags.length > 0) {
-      for (const tagName of tags) {
-        // find Tag or create tag first
-        const tag = await prisma.tag.upsert({
-          where: { name: tagName },
-          update: {},
-          create: { name: tagName },
-        });
+    if (parsedTags && parsedTags.length > 0) {
+      await Promise.all(
+        parsedTags.map(async (tagName) => {
+          const tag = await prisma.tag.upsert({
+            where: { name: tagName },
+            update: {},
+            create: { name: tagName },
+          });
 
-        // create relation in recipeTag
-        await prisma.recipeTag.create({
-          data: {
-            recipeId: newRecipe.id,
-            tagId: tag.id,
-          },
-        });
-      }
+          await prisma.recipeTag.upsert({
+            where: {
+              recipeId_tagId: {
+                recipeId: newRecipe.id,
+                tagId: tag.id,
+              },
+            },
+            update: {},
+            create: {
+              recipeId: newRecipe.id,
+              tagId: tag.id,
+            },
+          });
+        })
+      );
     }
 
     // get recipe data with all relation for send back

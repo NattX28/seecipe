@@ -6,7 +6,15 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const uploadImage = async (file, folder = "recipes") => {
   try {
-    const fileName = `${folder}/${Date.now()}-${fileName}`;
+    if (!file) {
+      console.error("File is undefined or null");
+      return "/placeholder-recipe.jpg";
+    }
+
+    console.log("Uploading file:", file.name);
+    const fileName = `${folder}/${Date.now()}-${file.originalname}`;
+
+    console.log("Uploading to Supabase path:", fileName);
     const { data, error } = await supabase.storage
       .from("image")
       .upload(fileName, file.buffer, {
@@ -14,13 +22,22 @@ const uploadImage = async (file, folder = "recipes") => {
         upsert: false,
       });
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase upload error:", error);
+      throw error;
+    }
 
-    const { data: url } = supabase.storage.from("image").getPublicUrl(fileName);
-    return url.publicUrl;
-  } catch (err) {
-    console.error("Error uploading image:", err);
-    throw err;
+    console.log("Upload successful, getting public URL");
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from("image")
+      .getPublicUrl(fileName);
+
+    console.log("Public URL:", urlData.publicUrl);
+    return urlData.publicUrl;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw error;
   }
 };
 

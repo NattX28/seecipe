@@ -23,14 +23,13 @@ const formatRecipesForCards = (recipes) => {
       prepTime: recipe.prepTime,
       cookTime: recipe.cookTime,
       user: recipe.user,
-      mainImage: recipe.images[0]?.url || null,
+      mainImage: imageUrl || null,
       tags: simplifiedTags,
       rating: {
         average: parseFloat(avgRating.toFixed(1)),
         count: recipe._count.ratings,
       },
       favoriteCount: recipe._count.favorites,
-      image: imageUrl,
     };
   });
 };
