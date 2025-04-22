@@ -12,9 +12,15 @@ const Home = () => {
     fetchRecipes();
   }, []);
 
+  const images = [
+    {
+      url: "/images/grilledsalmonsteaks.jpg",
+    },
+  ];
+
   return (
     <div className="w-full flex-grow">
-      <Banner />
+      <Banner images={images} />
 
       <h2 className="text-center text-3xl font-bold mt-16">
         What To <span className="text-third-color">Cook</span>?

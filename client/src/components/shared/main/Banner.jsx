@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
 
-const Banner = () => {
+const Banner = ({ images, h = "320px" }) => {
   return (
     <div className="w-full relative">
       <Swiper
@@ -16,24 +16,17 @@ const Banner = () => {
         slidesPerView={1}
         modules={[Autoplay]}
         className="w-full rounded-lg">
-        <SwiperSlide>
-          <div className="w-full h-[320px]">
-            <img
-              src="/images/grilledsalmonsteaks.jpg"
-              alt="salmon"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="w-full h-[320px]">
-            <img
-              src="/images/grilledsalmonsteaks.jpg"
-              alt="salmon"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </SwiperSlide>
+        {images.map((im, index) => (
+          <SwiperSlide key={index}>
+            <div className={`w-full h-[${h}]`}>
+              <img
+                src={im.url}
+                alt="salmon"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </SwiperSlide>
+        ))}
       </Swiper>
     </div>
   );

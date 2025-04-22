@@ -1,6 +1,8 @@
 import Tag from "./Tag";
+import { useNavigate } from "react-router";
 
 const CardRecipe = ({
+  id,
   title,
   user,
   tags,
@@ -24,8 +26,16 @@ const CardRecipe = ({
 
   const currentSize = sizeClasses[size] || sizeClasses.lg;
 
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`recipes/${id}`);
+  };
+
   return (
-    <div className="card bg-base-100 w-full shadow-sm rounded-4xl h-96 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer ">
+    <div
+      className="card bg-base-100 w-full shadow-sm rounded-4xl h-96 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer"
+      onClick={handleCardClick}>
       <div className="card-body gap-1">
         <div className="flex w-full justify-between">
           <h2 className="card-title">{title}</h2>

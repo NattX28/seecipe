@@ -25,6 +25,7 @@ const CardContainer = () => {
         {recipes.map((recipe, index) => (
           <CardRecipe
             key={recipe.id || index}
+            id={recipe.id}
             size="md"
             title={recipe.title}
             user={recipe.user?.username}

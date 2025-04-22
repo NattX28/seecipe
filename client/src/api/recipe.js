@@ -1,4 +1,6 @@
 import api from "./axios";
+const BASE_URL_RECIPES = "/recipes";
+const BASE_URL_TAGS = "/tags";
 
 export const getAllRecipes = async (params = {}) => {
   try {
@@ -24,7 +26,9 @@ export const getAllRecipes = async (params = {}) => {
     queryParams.append("sortBy", sortBy);
     queryParams.append("sortOrder", sortOrder);
 
-    const response = await api.get(`/recipes?${queryParams.toString()}`);
+    const response = await api.get(
+      `${BASE_URL_RECIPES}?${queryParams.toString()}`
+    );
 
     return response.data;
   } catch (err) {
@@ -33,9 +37,19 @@ export const getAllRecipes = async (params = {}) => {
   }
 };
 
+export const getRecipeById = async (id) => {
+  try {
+    const response = await api.get(`${BASE_URL_RECIPES}/${id}`);
+    return response.data.data;
+  } catch (err) {
+    console.log("Error get recipe by id");
+    throw err;
+  }
+};
+
 export const getAllTags = async () => {
   try {
-    const response = await api.get("/tags");
+    const response = await api.get(`${BASE_URL_TAGS}`);
     return response.data.data;
   } catch (err) {
     console.log("Error get all tag");

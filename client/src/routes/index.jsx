@@ -6,6 +6,7 @@ import Home from "../pages/Home";
 // layouts
 import MainLayout from "../layouts/MainLayout";
 import Register from "../pages/Register";
+import RecipeDetail from "../pages/RecipeDetail";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: "/recipes/:id",
+        element: <RecipeDetail />,
       },
     ],
   },
