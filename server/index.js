@@ -32,4 +32,4 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT} successfully`);
 });
 
-module.exports = app; // Export only the Express app if needed
+module.exports = app;

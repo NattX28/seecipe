@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { getRecipeById } from "../api/recipe";
 import Tag from "../components/shared/main/Tag";
-import Banner from "../components/shared/main/Banner";
+import ReviewContainer from "../components/shared/main/ReviewContainer";
 
 const RecipeDetail = () => {
   const { id } = useParams();
@@ -50,8 +50,9 @@ const RecipeDetail = () => {
             <Tag
               key={tag.name}
               tagName={tag.name}
-              color="bg-white"
+              color="bg-white "
               textColor="text-main-color"
+              border={"#ffa725"}
               size="lg"
             />
           ))}
@@ -59,12 +60,18 @@ const RecipeDetail = () => {
       </div>
 
       {/* Banner */}
-      <div className="h-[420px]">
-        <Banner images={recipe.images} h={"420px"} />
+      <div className="w-full h-[420px]">
+        <figure className="w-full h-full">
+          <img
+            src={recipe.images[0]?.url}
+            alt="Banner image"
+            className="w-full h-full object-contain"
+          />
+        </figure>
       </div>
 
       {/* Detail */}
-      <div className="flex justify-between my-4">
+      <div className="flex justify-between mt-8 my-4">
         <div className="flex items-center gap-2 ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -195,15 +202,41 @@ const RecipeDetail = () => {
       <div className="flex flex-col gap-4">
         {recipe.instructions.map((instruc, index) => (
           <div
-            className="flex items-center gap-16 bg-white px-12 py-8 rounded-xl"
+            className="flex items-start gap-16 bg-white px-12 py-10 rounded-xl shadow-lg transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"
             key={index}>
             <h4 className="text-2xl text-third-color font-semibold">
               {index + 1}
             </h4>
-            <p className="text-main-color text-lg">{instruc[index]}</p>
+            <div className="flex-1">
+              <p className="text-main-color text-lg">{instruc}</p>
+
+              {recipe.images[index]?.url && (
+                <figure className="max-w-full mt-6">
+                  <img
+                    src={recipe.images[index].url}
+                    alt={`step ${index + 1}`}
+                    className="rounded-lg mx-auto transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
+                  />
+                  {recipe.images[index]?.caption && (
+                    <figcaption className="text-center mt-2 text-base-content/70">
+                      {recipe.images[index].caption}
+                    </figcaption>
+                  )}
+                </figure>
+              )}
+            </div>
           </div>
         ))}
       </div>
+
+      {/* Review */}
+      <h2 className="text-2xl font-semibold mt-16 mb-4">
+        Cooking <span className="text-third-color">Reviews</span>
+      </h2>
+      {/* {recipe.ratings?.map((rating) => (
+        <Review rating={rating} />
+      ))} */}
+      {recipe.ratings && <ReviewContainer ratings={recipe.ratings} />}
     </div>
   );
 };

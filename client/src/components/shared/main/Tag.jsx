@@ -3,6 +3,7 @@ const Tag = ({
   color = "#3D3D3D",
   textColor = "text-white",
   size = "lg",
+  border = "",
 }) => {
   const sizeClasses = {
     sm: {
@@ -26,7 +27,12 @@ const Tag = ({
 
   return (
     <div
-      className={`badge rounded-full ${currentSize.padding} bg-[${color}] ${textColor} ${currentSize.text}`}>
+      className={`badge rounded-full ${
+        currentSize.padding
+      } bg-[${color}] ${textColor} ${currentSize.text} ${
+        border ? "border-1" : ""
+      }`}
+      style={border ? { borderColor: border } : {}}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

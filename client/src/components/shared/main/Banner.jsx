@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
 
-const Banner = ({ images, h = "320px" }) => {
+const Banner = ({ images }) => {
   return (
     <div className="w-full relative">
       <Swiper
@@ -18,7 +18,7 @@ const Banner = ({ images, h = "320px" }) => {
         className="w-full rounded-lg">
         {images.map((im, index) => (
           <SwiperSlide key={index}>
-            <div className={`w-full h-[${h}]`}>
+            <div className={`w-full h-[320px]`}>
               <img
                 src={im.url}
                 alt="salmon"

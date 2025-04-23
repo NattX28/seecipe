@@ -46,4 +46,9 @@
   .text-forth-color {
     color: #bbbbbb;
   }
+
+  /* Border */
+  .border-third {
+    border-color: #ffa725;
+  }
 }
