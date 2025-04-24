@@ -1,11 +1,14 @@
 import { Outlet } from "react-router";
 import Navbar from "../components/shared/main/Navbar";
 import Footer from "../components/shared/main/Footer";
+import NavbarUser from "../components/shared/auth/NavbarUser";
 
 const MainLayout = () => {
+  const isAuthenticated = useAuthStore((store) => state.isAuthenticated);
+
   return (
     <div className="flex flex-col h-full min-h-screen">
-      <Navbar />
+      {isAuthenticated ? <NavbarUser /> : <Navbar />}
       <main className="flex-grow w-full">
         <div className="w-full max-w-screen-xl mx-auto">
           <Outlet />

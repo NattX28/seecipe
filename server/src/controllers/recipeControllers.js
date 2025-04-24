@@ -188,7 +188,7 @@ const getAllRecipes = async (req, res) => {
               },
             },
           },
-          take: 3, // limit disply only 3 tags
+          take: 2, // limit disply only 2 tags
         },
         images: {
           select: {

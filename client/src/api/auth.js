@@ -21,3 +21,14 @@ export const login = async ({ username, password }) => {
     throw err;
   }
 };
+
+export const logout = async () => {
+  try {
+    const res = await api.post("/logout");
+    console.log("Logout response:", res);
+    return res.data;
+  } catch (err) {
+    console.log("Logout failed", err);
+    throw err;
+  }
+};

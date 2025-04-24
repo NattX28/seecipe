@@ -1,17 +1,27 @@
 import { useState } from "react";
 import { login } from "../../../api/auth";
 import ButtonMod from "./ButtonMod";
+import { useAuthStore } from "../../../store/authStore";
 
 const LoginModal = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const setUser = useAuthStore((state) => state.setUser);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login button clicked!"); // Add this line
+    setError("");
+
     try {
       const data = await login({ username, password });
       console.log("Logged in:", data);
+
+      setUser({
+        username,
+        id: data.userId || "",
+      });
+
       document.getElementById("login_modal").close();
     } catch (err) {
       console.log("Login failed:", err.response?.data || err.message);
