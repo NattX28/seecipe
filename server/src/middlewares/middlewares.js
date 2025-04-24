@@ -2,7 +2,12 @@ const { verifyToken } = require("../utils/jwt");
 
 const authMiddleware = (req, res, next) => {
   const token = req.cookies.token;
-  if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+  // If no token exists, just proceed without user info
+  if (!token) {
+    req.user = null;
+    return next();
+  }
 
   try {
     const payload = verifyToken(token);
