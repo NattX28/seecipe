@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRecipeStore } from "../../../store/recipeStore";
 import { useAuthStore } from "../../../store/authStore";
+import NotificationDropdown from "./NotificationDropdown";
 
 const NavbarUser = () => {
   const { setSearch, fetchRecipes } = useRecipeStore();
@@ -65,39 +66,9 @@ const NavbarUser = () => {
               />
             </svg>
           </button>
+
           {/* notification */}
-          <div className="dropdown">
-            <button
-              tabIndex={0}
-              role="button"
-              className="relative  cursor-pointer transition-transform duration-100 hover:scale-[1.02]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="3"
-                stroke="currentColor"
-                class="size-6 text-third-color">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
-                />
-              </svg>
-              {/* if have unread noti */}
-              <div className="absolute bottom-1 right-0 status status-warning animate-bounce"></div>
-            </button>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-              <li>
-                <a>Item 1</a>
-              </li>
-              <li>
-                <a>Item 2</a>
-              </li>
-            </ul>
-          </div>
+          <NotificationDropdown />
         </div>
 
         <div className="flex items-center gap-2">
