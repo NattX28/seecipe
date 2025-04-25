@@ -15,7 +15,7 @@ const NotificationDropdown = () => {
 
   // Connect to socket.io when component mounts
   useEffect(() => {
-    const socketInstance = io({
+    const socketInstance = io(process.env.APP_SOCKET_URL, {
       withCredentials: true, // automitically sent cookie in every request
     });
 
