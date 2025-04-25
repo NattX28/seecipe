@@ -14,4 +14,7 @@ export default defineConfig({
   //     },
   //   },
   // },
+  define: {
+    __APP_ENV__: JSON.stringify(process.env.VITE_APP_ENV),
+  },
 });
