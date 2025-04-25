@@ -10,12 +10,26 @@ const http = require("http");
 const server = http.createServer(app);
 const socketService = require("./socket"); // Import the socket module
 
+const isProduction = process.env.NODE_ENV === "production";
+
+const allowedOrigins = isProduction
+  ? ["https://seecipe.vercel.app"]
+  : ["http://localhost:5173", "https://seecipe.vercel.app"];
+
 app.use(
   cors({
-    origin: "https://seecipe.vercel.app",
+    origin: function (origin, callback) {
+      // allow requests with no origin (e.g. mobile apps or curl)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+
 app.use(
   bodyParser.json({
     limit: "10mb",
