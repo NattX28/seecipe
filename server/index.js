@@ -10,7 +10,12 @@ const http = require("http");
 const server = http.createServer(app);
 const socketService = require("./socket"); // Import the socket module
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://seecipe.vercel.app",
+    credentials: true,
+  })
+);
 app.use(
   bodyParser.json({
     limit: "10mb",
