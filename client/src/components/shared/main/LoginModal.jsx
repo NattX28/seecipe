@@ -20,6 +20,7 @@ const LoginModal = () => {
       setUser({
         username,
         id: data.userId || "",
+        profilePicture: data.profilePicture,
       });
 
       document.getElementById("login_modal").close();

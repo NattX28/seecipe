@@ -1,17 +1,26 @@
 const { Server } = require("socket.io");
 const { verifyToken } = require("./src/utils/jwt");
+const cookieParser = require("cookie-parser");
 
 let io;
 const connectedUsers = new Map();
 
 // Initialize socket server with an HTTP server
 function initSocketServer(server) {
-  io = new Server(server);
+  io = new Server(server, {
+    cors: {
+      origin: process.env.CLIENT_URL || "http://localhost:5173",
+      credentials: true,
+    },
+  });
 
   io.use((socket, next) => {
-    const token = socket.handshake.auth.token;
-
     try {
+      const token = socket.request.cookies["token"];
+
+      if (!token)
+        return next(new Error("Authentication error: No token provided"));
+
       const user = verifyToken(token);
       socket.user = user;
       next();

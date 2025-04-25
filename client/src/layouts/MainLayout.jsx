@@ -2,9 +2,15 @@ import { Outlet } from "react-router";
 import Navbar from "../components/shared/main/Navbar";
 import Footer from "../components/shared/main/Footer";
 import NavbarUser from "../components/shared/auth/NavbarUser";
+import { useAuthStore } from "../store/authStore";
+import { useEffect } from "react";
 
 const MainLayout = () => {
-  const isAuthenticated = useAuthStore((store) => state.isAuthenticated);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  useEffect(() => {
+    console.log("Auth state in MainLayout:", isAuthenticated);
+  }, [isAuthenticated]);
 
   return (
     <div className="flex flex-col h-full min-h-screen">
