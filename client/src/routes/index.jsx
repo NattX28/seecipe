@@ -7,6 +7,8 @@ import Home from "../pages/Home";
 import MainLayout from "../layouts/MainLayout";
 import Register from "../pages/Register";
 import RecipeDetail from "../pages/RecipeDetail";
+import FavoritePage from "../pages/FavoritePage";
+import ProtectedRoute from "./../components/shared/auth/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +22,14 @@ const router = createBrowserRouter([
       {
         path: "/recipes/:id",
         element: <RecipeDetail />,
+      },
+      {
+        path: "/favorites",
+        element: (
+          <ProtectedRoute>
+            <FavoritePage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

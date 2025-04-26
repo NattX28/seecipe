@@ -4,6 +4,7 @@ import Footer from "../components/shared/main/Footer";
 import NavbarUser from "../components/shared/auth/NavbarUser";
 import { useAuthStore } from "../store/authStore";
 import { useEffect } from "react";
+import LoginModal from "./../components/shared/main/LoginModal";
 
 const MainLayout = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -21,6 +22,7 @@ const MainLayout = () => {
         </div>
       </main>
       <Footer />
+      <LoginModal />
     </div>
   );
 };

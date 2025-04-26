@@ -1,13 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { login } from "../../../api/auth";
 import ButtonMod from "./ButtonMod";
 import { useAuthStore } from "../../../store/authStore";
+import { useLocation, useNavigate } from "react-router";
 
 const LoginModal = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const setUser = useAuthStore((state) => state.setUser);
+  const [redirectPath, setRedirectPath] = useState("/");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Store the current path when modal opens
+  useEffect(() => {
+    // Only set redirect path if we're not already on the home page
+    if (location.pathname !== "/") {
+      setRedirectPath(location.pathname);
+    }
+  }, [location]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,6 +36,11 @@ const LoginModal = () => {
       });
 
       document.getElementById("login_modal").close();
+
+      // Redirect to the saved path
+      if (redirectPath && redirectPath !== "/") {
+        navigate(redirectPath);
+      }
     } catch (err) {
       console.log("Login failed:", err.response?.data || err.message);
     }
