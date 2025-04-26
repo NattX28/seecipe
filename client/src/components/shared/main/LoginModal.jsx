@@ -3,6 +3,7 @@ import { login } from "../../../api/auth";
 import ButtonMod from "./ButtonMod";
 import { useAuthStore } from "../../../store/authStore";
 import { useLocation, useNavigate } from "react-router";
+import { useRecipeStore } from "../../../store/recipeStore";
 
 const LoginModal = () => {
   const [username, setUsername] = useState("");
@@ -12,6 +13,9 @@ const LoginModal = () => {
   const [redirectPath, setRedirectPath] = useState("/");
   const navigate = useNavigate();
   const location = useLocation();
+  const fetchUserFavorites = useRecipeStore(
+    (state) => state.fetchUserFavorites
+  );
 
   // Store the current path when modal opens
   useEffect(() => {
@@ -34,6 +38,8 @@ const LoginModal = () => {
         id: data.userId || "",
         profilePicture: data.profilePicture,
       });
+
+      fetchUserFavorites();
 
       document.getElementById("login_modal").close();
 

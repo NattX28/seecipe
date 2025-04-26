@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useRecipeStore } from "../../../store/recipeStore";
 import { useAuthStore } from "../../../store/authStore";
 import NotificationDropdown from "./NotificationDropdown";
+import { useNavigate } from "react-router";
 
 const NavbarUser = () => {
   const { setSearch, fetchRecipes } = useRecipeStore();
   const { user, logoutUser } = useAuthStore();
   const [searchInput, setSearchInput] = useState("");
+  const navigate = useNavigate();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -16,14 +18,17 @@ const NavbarUser = () => {
 
   const handleLogout = async () => {
     await logoutUser();
+    navigate("/");
   };
 
   return (
     <nav className="w-full bg-main py-2">
       <div className="w-full max-w-screen-xl mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">
-          SEE<span className="text-third-color">CIPE</span>
-        </h1>
+        <div className="cursor-pointer" onClick={() => navigate("/")}>
+          <h1 className="text-2xl font-bold">
+            SEE<span className="text-third-color">CIPE</span>
+          </h1>
+        </div>
         <div className="flex items-center justify-center gap-2 ">
           <form onSubmit={handleSearch}>
             <label className="input rounded-full">
@@ -51,7 +56,9 @@ const NavbarUser = () => {
           </form>
 
           {/* favorite */}
-          <button className="cursor-pointer transition-transform duration-100 hover:scale-[1.02]">
+          <div
+            className="cursor-pointer transition-transform duration-100 hover:scale-[1.02]"
+            onClick={() => navigate("/favorites")}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -65,7 +72,7 @@ const NavbarUser = () => {
                 d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
               />
             </svg>
-          </button>
+          </div>
 
           {/* notification */}
           <NotificationDropdown />

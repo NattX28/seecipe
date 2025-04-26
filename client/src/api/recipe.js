@@ -47,6 +47,31 @@ export const getRecipeById = async (id) => {
   }
 };
 
+export const toggleFav = async (recipeId) => {
+  try {
+    const response = await api.post(`${BASE_URL_RECIPES}/${recipeId}/favorite`);
+    return response.data;
+  } catch (err) {
+    console.error("Error toggling favorite:", err);
+    throw err;
+  }
+};
+
+export const getUserFavorites = async (params = {}) => {
+  try {
+    const queryParams = new URLSearchParams({
+      page: params.page || 1,
+      limit: params.limit || 6,
+    }).toString();
+
+    const response = await api.get(`/favorites?${queryParams}`);
+    return response.data;
+  } catch (err) {
+    console.error("Error fetching user favorites:", err);
+    throw err;
+  }
+};
+
 export const getAllTags = async () => {
   try {
     const response = await api.get(`${BASE_URL_TAGS}`);

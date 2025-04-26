@@ -1,11 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import CardRecipe from "./CardRecipe";
 import ReactPaginate from "react-paginate";
 import { useRecipeStore } from "../../../store/recipeStore";
 
 const CardContainer = () => {
-  const { recipes, pagination, loading, error, setPage, fetchRecipes } =
-    useRecipeStore();
+  const {
+    recipes,
+    pagination,
+    loading,
+    error,
+    setPage,
+    fetchRecipes,
+    toggleFavorite,
+    isFavorite,
+  } = useRecipeStore();
 
   useEffect(() => {
     fetchRecipes();
@@ -13,6 +21,10 @@ const CardContainer = () => {
 
   const handlePageClick = (event) => {
     setPage(event.selected + 1);
+  };
+
+  const handleFavoriteToggle = async (recipeId) => {
+    await toggleFavorite(recipeId);
   };
 
   if (loading)
@@ -34,6 +46,8 @@ const CardContainer = () => {
             cookTime={recipe.cookTime}
             servings={recipe.servings}
             image={recipe.mainImage || "/placeholder-recipe.jpg"}
+            isFavorite={isFavorite(recipe.id)}
+            onFavoriteToggle={handleFavoriteToggle}
           />
         ))}
       </div>

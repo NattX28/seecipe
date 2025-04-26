@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { logout } from "../api/auth";
+import { useRecipeStore } from "./recipeStore";
 
 export const useAuthStore = create(
   persist(
@@ -15,10 +16,22 @@ export const useAuthStore = create(
       logoutUser: async () => {
         try {
           await logout();
+          await useAuthStore.persist.clearStorage();
           set({ user: null, isAuthenticated: false });
+
+          const clearFavorites = useRecipeStore.getState().clearFavorites;
+          if (clearFavorites) {
+            clearFavorites();
+          }
         } catch (err) {
           console.log("Logout error", err);
+          await useAuthStore.persist.clearStorage();
           set({ user: null, isAuthenticated: false });
+
+          const clearFavorites = useRecipeStore.getState().clearFavorites;
+          if (clearFavorites) {
+            clearFavorites();
+          }
         }
       },
     }),

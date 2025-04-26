@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useRecipeStore } from "../../../store/recipeStore";
+import { useNavigate } from "react-router";
 
 const Navbar = () => {
   const { setSearch, fetchRecipes } = useRecipeStore();
   const [searchInput, setSearchInput] = useState("");
+  const navigate = useNavigate();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -14,9 +16,11 @@ const Navbar = () => {
   return (
     <nav className="w-full bg-main py-2">
       <div className="w-full max-w-screen-xl mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">
-          SEE<span className="text-third-color">CIPE</span>
-        </h1>
+        <div className="cursor-pointer" onClick={() => navigate("/")}>
+          <h1 className="text-2xl font-bold">
+            SEE<span className="text-third-color">CIPE</span>
+          </h1>
+        </div>
 
         <form onSubmit={handleSearch}>
           <label className="input rounded-full">

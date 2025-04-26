@@ -429,9 +429,11 @@ const saveToFavorites = async (req, res) => {
     // if already a favorite, remove it.
     if (existingFavorite) {
       await prisma.favorite.delete({
-        userId_recipeId: {
-          userId,
-          recipeId,
+        where: {
+          userId_recipeId: {
+            userId,
+            recipeId,
+          },
         },
       });
 
@@ -459,6 +461,114 @@ const saveToFavorites = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error updating favorites", error: err.message });
+  }
+};
+
+const getFavorites = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+  const userId = req.user.id; // Get the current user's ID
+
+  // Convert parameters
+  const pageNum = parseInt(page);
+  const limitNum = parseInt(limit);
+  const skip = (pageNum - 1) * limitNum;
+
+  try {
+    // Get favorite recipes for the current user
+    const favorites = await prisma.favorite.findMany({
+      where: {
+        userId: userId,
+      },
+      include: {
+        recipe: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                profilePicture: true,
+              },
+            },
+            tags: {
+              select: {
+                tag: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+              take: 2,
+            },
+            images: {
+              where: {
+                displayOrder: 0,
+              },
+              take: 1,
+            },
+            ratings: {
+              select: {
+                score: true,
+              },
+            },
+            _count: {
+              select: {
+                ratings: true,
+                favorites: true,
+              },
+            },
+          },
+        },
+      },
+      skip: skip,
+      take: limitNum,
+      orderBy: {
+        createdAt: "desc", // Sort by most recently favorited
+      },
+    });
+
+    // Transform to the format expected by your frontend
+    const formattedRecipes = favorites.map((favorite) => {
+      const recipe = favorite.recipe;
+      return {
+        id: recipe.id,
+        title: recipe.title,
+        prepTime: recipe.prepTime,
+        cookTime: recipe.cookTime,
+        servings: recipe.servings,
+        user: recipe.user,
+        tags: recipe.tags,
+        mainImage: recipe.images[0]?.url || null,
+        avgRating:
+          recipe.ratings.length > 0
+            ? recipe.ratings.reduce((sum, rating) => sum + rating.score, 0) /
+              recipe.ratings.length
+            : 0,
+        reviewCount: recipe._count.ratings,
+        favoriteCount: recipe._count.favorites,
+      };
+    });
+
+    // Count total favorites for pagination
+    const totalFavorites = await prisma.favorite.count({
+      where: { userId: userId },
+    });
+
+    res.status(200).json({
+      message: "Favorites recipes retrieved successfully",
+      data: formattedRecipes,
+      pagination: {
+        total: totalFavorites,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(totalFavorites / limitNum),
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: "Failed to retrieve favorites recipes",
+    });
   }
 };
 
@@ -517,6 +627,7 @@ module.exports = {
   rateRecipe,
   commentOnRecipe,
   saveToFavorites,
+  getFavorites,
   getAllTags,
   getTagById,
 };
