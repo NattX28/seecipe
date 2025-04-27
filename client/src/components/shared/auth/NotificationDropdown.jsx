@@ -89,7 +89,7 @@ const NotificationDropdown = () => {
           viewBox="0 0 24 24"
           stroke-width="3"
           stroke="currentColor"
-          class="size-6 text-third-color">
+          class="size-6 inline text-third-color">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -98,7 +98,7 @@ const NotificationDropdown = () => {
         </svg>
         {/* if have unread noti */}
         {unreadCount < 0 && (
-          <div className="absolute bottom-1 right-0 status status-warning animate-bounce"></div>
+          <div className="absolute  bottom-1 right-0 status status-warning animate-bounce"></div>
         )}
       </button>
       <ul

@@ -81,3 +81,16 @@ export const getAllTags = async () => {
     throw err;
   }
 };
+
+export const rateRecipe = async (id, score, review) => {
+  try {
+    const response = await api.post(`${BASE_URL_RECIPES}/${id}/rate`, {
+      score,
+      review,
+    });
+    return response.data.data;
+  } catch (err) {
+    console.log("Error rate recipe");
+    throw err;
+  }
+};

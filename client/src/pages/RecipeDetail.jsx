@@ -3,12 +3,14 @@ import { useParams } from "react-router";
 import { getRecipeById } from "../api/recipe";
 import Tag from "../components/shared/main/Tag";
 import ReviewContainer from "../components/shared/main/ReviewContainer";
+import ReviewModal from "../components/shared/auth/ReviewModal";
 
 const RecipeDetail = () => {
   const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [reviewsUpdated, setReviewsUpdated] = useState(0);
 
   useEffect(() => {
     const fetchRecipeDetail = async () => {
@@ -26,7 +28,12 @@ const RecipeDetail = () => {
     if (id) {
       fetchRecipeDetail();
     }
-  }, [id]);
+  }, [id, reviewsUpdated]);
+
+  const handleReviewSubmitted = () => {
+    // Increment counter to trigger recipe refetch
+    setReviewsUpdated((prev) => prev + 1);
+  };
 
   if (loading)
     return (
@@ -43,6 +50,7 @@ const RecipeDetail = () => {
 
   return (
     <div className="flex flex-col mt-8">
+      <ReviewModal onReviewSubmitted={handleReviewSubmitted} />
       <div className="flex items-center gap-16 mb-4">
         <h1 className="text-4xl font-bold">{recipe.title}</h1>
         <div className="flex gap-2">
@@ -143,7 +151,7 @@ const RecipeDetail = () => {
       <div className="flex w-full justify-between items-start gap-16 mt-16">
         <p className="text-lg">{recipe.description}</p>
 
-        <div className="card bg-white rounded-2xl w-56 h-56 shadow-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
+        <div className="card bg-white rounded-2xl w-56 h-56 mb-8 shadow-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
           <div className="card-body items-center">
             <figure className="rounded-full w-32 h-32 shadow-xs transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
               <img
@@ -230,9 +238,29 @@ const RecipeDetail = () => {
       </div>
 
       {/* Review */}
-      <h2 className="text-2xl font-semibold mt-16 mb-4">
-        Cooking <span className="text-third-color">Reviews</span>
-      </h2>
+      <div className="flex items-center gap-4 mt-16 mb-4">
+        <h2 className="text-2xl font-semibold">
+          Cooking <span className="text-third-color">Reviews</span>
+        </h2>
+        <button
+          onClick={() => document.getElementById("review_modal").showModal()}
+          className="cursor-pointer">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+            />
+          </svg>
+        </button>
+      </div>
+
       {/* {recipe.ratings?.map((rating) => (
         <Review rating={rating} />
       ))} */}
