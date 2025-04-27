@@ -438,8 +438,11 @@ const saveToFavorites = async (req, res) => {
       });
 
       return res.status(200).json({
-        message: "Recipe remove from favorites successfully",
-        data: null,
+        message: "Recipe removed from favorites successfully",
+        data: {
+          recipeId,
+          userId,
+        },
         isFavorite: false,
       });
     }

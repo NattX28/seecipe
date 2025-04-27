@@ -1,12 +1,10 @@
 const { verifyToken } = require("../utils/jwt");
 
-const authMiddleware = (req, res, next) => {
+const requiredAuthMiddleware = (req, res, next) => {
   const token = req.cookies.token;
 
-  // If no token exists, just proceed without user info
   if (!token) {
-    req.user = null;
-    return next();
+    return res.status(401).json({ message: "Authentication required" });
   }
 
   try {
@@ -18,4 +16,4 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = { authMiddleware };
+module.exports = { requiredAuthMiddleware };

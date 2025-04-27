@@ -6,13 +6,19 @@ const {
   markAsRead,
   deleteNotification,
 } = require("../controllers/notificationControllers");
-const { authMiddleware } = require("../middlewares/middlewares");
+const {
+  requiredAuthMiddleware,
+} = require("../middlewares/requiredAuthMiddleware");
 
-router.use(authMiddleware);
+// router.use(requiredAuthMiddleware);
 
-router.get("/notifications", getNotifications);
-router.get("/notifications/unread-count", getUnreadCount);
-router.put("/notifications/mark-read", markAsRead);
-router.delete("/notifications/:id", deleteNotification);
+router.get("/notifications", requiredAuthMiddleware, getNotifications);
+router.get(
+  "/notifications/unread-count",
+  requiredAuthMiddleware,
+  getUnreadCount
+);
+router.put("/notifications/mark-read", requiredAuthMiddleware, markAsRead);
+router.delete("/notifications/:id", requiredAuthMiddleware, deleteNotification);
 
 module.exports = router;

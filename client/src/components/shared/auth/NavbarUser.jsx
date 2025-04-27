@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecipeStore } from "../../../store/recipeStore";
 import { useAuthStore } from "../../../store/authStore";
 import NotificationDropdown from "./NotificationDropdown";
 import { useNavigate } from "react-router";
 
 const NavbarUser = () => {
-  const { setSearch, fetchRecipes } = useRecipeStore();
+  const { setSearch, fetchRecipes, fetchUserFavorites } = useRecipeStore();
   const { user, logoutUser } = useAuthStore();
   const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
+
+  // Initialize favorites when the navbar loads (user is authenticated)
+  useEffect(() => {
+    fetchUserFavorites();
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();

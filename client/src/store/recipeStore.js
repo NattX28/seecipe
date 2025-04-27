@@ -18,6 +18,7 @@ export const useRecipeStore = create((set, get) => ({
 
   userFavorites: [],
   favoritesSet: new Set(),
+  favoritesInitialized: false,
 
   // setter with auto fetch
   setSearch: (search) => {
@@ -81,6 +82,15 @@ export const useRecipeStore = create((set, get) => ({
   },
 
   fetchUserFavorites: async () => {
+    // Skip if we're not on a page that needs favorites
+    // This avoids unnecessary API calls when not needed
+    if (
+      !window.location.pathname.includes("favorites") &&
+      get().favoritesInitialized
+    ) {
+      return;
+    }
+
     const { pagination } = get();
     set({ loading: true, error: null });
 
@@ -95,6 +105,7 @@ export const useRecipeStore = create((set, get) => ({
         pagination: response.pagination,
         loading: false,
         favoritesSet: new Set(response.data.map((recipe) => recipe.id)),
+        favoritesInitialized: true,
       });
     } catch (err) {
       console.error("Error fetching favorites:", err);
@@ -141,6 +152,13 @@ export const useRecipeStore = create((set, get) => ({
       return isFavorite;
     } catch (err) {
       console.error("Error toggling favorite:", err);
+
+      // Check if it's an authentication error
+      if (err.response && err.response.status === 401) {
+        // Open login modal
+        document.getElementById("login_modal").showModal();
+      }
+
       return null;
     }
   },
@@ -149,6 +167,7 @@ export const useRecipeStore = create((set, get) => ({
     set({
       userFavorites: [],
       favoritesSet: new Set(),
+      favoritesInitialized: false,
     });
   },
 
