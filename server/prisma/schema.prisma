@@ -155,11 +155,12 @@ model Follow {
 }
 
 model Image {
-  id           Int     @id @default(autoincrement())
-  recipeId     Int
-  url          String
-  caption      String?
-  displayOrder Int     @default(0)
+  id               Int     @id @default(autoincrement())
+  recipeId         Int
+  url              String
+  caption          String?
+  displayOrder     Int     @default(0)
+  instructionIndex Int?
 
   // Relations
   recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)

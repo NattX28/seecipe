@@ -2,6 +2,20 @@ import api from "./axios";
 const BASE_URL_RECIPES = "/recipes";
 const BASE_URL_TAGS = "/tags";
 
+export const createRecipe = async (formData) => {
+  try {
+    const response = await api.post(`${BASE_URL_RECIPES}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data.data;
+  } catch (err) {
+    console.error("Error create recipes:", err);
+    throw err;
+  }
+};
+
 export const getAllRecipes = async (params = {}) => {
   try {
     const {

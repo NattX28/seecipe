@@ -96,20 +96,6 @@ const createRecipe = async (req, res) => {
       );
     }
 
-    // get recipe data with all relation for send back
-    // const recipeWithRelations = await prisma.recipe.findUnique({
-    //   where: { id: newRecipe.id },
-    //   include: {
-    //     ingredients: true,
-    //     tags: {
-    //       include: {
-    //         tag: true,
-    //       },
-    //     },
-    //     images: true,
-    //   },
-    // });
-
     res.status(201).json({
       message: "Recipe created successfully",
       data: newRecipe,

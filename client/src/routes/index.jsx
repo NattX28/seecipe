@@ -9,6 +9,7 @@ import Register from "../pages/Register";
 import RecipeDetail from "../pages/RecipeDetail";
 import FavoritePage from "../pages/FavoritePage";
 import ProtectedRoute from "./../components/shared/auth/ProtectedRoute";
+import CreateRecipe from "../pages/CreateRecipe";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,14 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Register />,
+  },
+  {
+    path: "/create-recipe",
+    element: (
+      <ProtectedRoute>
+        <CreateRecipe />
+      </ProtectedRoute>
+    ),
   },
 ]);
 
