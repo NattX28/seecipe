@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { getRecipeById } from "../api/recipe";
+import { getRecipeById, getRecipeReviews } from "../api/recipe";
 import Tag from "../components/shared/main/Tag";
 import ReviewContainer from "../components/shared/main/ReviewContainer";
 import ReviewModal from "../components/shared/auth/ReviewModal";
@@ -8,9 +8,9 @@ import ReviewModal from "../components/shared/auth/ReviewModal";
 const RecipeDetail = () => {
   const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [reviewsUpdated, setReviewsUpdated] = useState(0);
 
   useEffect(() => {
     const fetchRecipeDetail = async () => {
@@ -18,6 +18,7 @@ const RecipeDetail = () => {
         setLoading(true);
         const data = await getRecipeById(id);
         setRecipe(data);
+        setReviews(data.ratings || []);
       } catch (err) {
         setError(err.message || "Failed to load recipe");
       } finally {
@@ -28,11 +29,20 @@ const RecipeDetail = () => {
     if (id) {
       fetchRecipeDetail();
     }
-  }, [id, reviewsUpdated]);
+  }, [id]);
+
+  const fetchReviews = async () => {
+    try {
+      const reviewsData = await getRecipeReviews(id);
+      console.log("reviewsData", reviewsData);
+      setReviews(reviewsData);
+    } catch (err) {
+      console.error("Failed to refresh reviews:", err);
+    }
+  };
 
   const handleReviewSubmitted = () => {
-    // Increment counter to trigger recipe refetch
-    setReviewsUpdated((prev) => prev + 1);
+    fetchReviews();
   };
 
   if (loading)
@@ -264,7 +274,7 @@ const RecipeDetail = () => {
       {/* {recipe.ratings?.map((rating) => (
         <Review rating={rating} />
       ))} */}
-      {recipe.ratings && <ReviewContainer ratings={recipe.ratings} />}
+      {recipe.ratings && <ReviewContainer ratings={reviews} />}
     </div>
   );
 };

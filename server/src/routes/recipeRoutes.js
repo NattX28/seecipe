@@ -10,6 +10,7 @@ const {
   getAllTags,
   getTagById,
   getFavorites,
+  getReviews,
 } = require("../controllers/recipeControllers");
 
 const multer = require("multer");
@@ -38,6 +39,7 @@ router.post(
 );
 router.get("/recipes", optionalAuthMiddleware, getAllRecipes);
 router.get("/recipes/:id", optionalAuthMiddleware, getRecipeById);
+router.get("/recipes/:id/reviews", optionalAuthMiddleware, getReviews);
 router.post("/recipes/:id/rate", requiredAuthMiddleware, rateRecipe);
 router.post("/recipes/:id/comments", requiredAuthMiddleware, commentOnRecipe);
 router.post("/recipes/:id/favorite", requiredAuthMiddleware, saveToFavorites);

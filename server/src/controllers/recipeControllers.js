@@ -575,6 +575,90 @@ const getFavorites = async (req, res) => {
   }
 };
 
+const getReviews = async (req, res) => {
+  const { id } = req.params;
+  const {
+    page = 1,
+    limit = 5,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+  } = req.query;
+
+  try {
+    // Convert parameters
+    const recipeId = parseInt(id);
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Check if recipe exists
+    const recipeExists = await prisma.recipe.findUnique({
+      where: {
+        id: recipeId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!recipeExists) {
+      res.status(404).json({ error: "Recipe not found" });
+    }
+
+    // Get reviews with pagination
+    const reviews = await prisma.rating.findMany({
+      where: { recipeId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            profilePicture: true,
+          },
+        },
+      },
+      skip,
+      take: limitNum,
+      orderBy: {
+        [sortBy]: sortOrder,
+      },
+    });
+
+    // Count total reviews for pagination
+    const totalReviews = await prisma.rating.count({
+      where: { recipeId },
+    });
+
+    const ratingStats = await prisma.rating.aggregate({
+      where: { recipeId },
+      _avg: {
+        score: true,
+      },
+      _count: true,
+    });
+
+    res.status(200).json({
+      message: "Review retrieved successfully",
+      data: reviews,
+      stats: {
+        average: ratingStats._avg.score || 0,
+        count: ratingStats._count || 0,
+      },
+      pagination: {
+        total: totalReviews,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(totalReviews / limitNum),
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: "Failed to retrieve reviews",
+    });
+  }
+};
+
 const getAllTags = async (req, res) => {
   try {
     const tags = await prisma.tag.findMany({
@@ -631,6 +715,7 @@ module.exports = {
   commentOnRecipe,
   saveToFavorites,
   getFavorites,
+  getReviews,
   getAllTags,
   getTagById,
 };

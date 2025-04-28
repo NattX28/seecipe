@@ -94,3 +94,13 @@ export const rateRecipe = async (id, score, review) => {
     throw err;
   }
 };
+
+export const getRecipeReviews = async (id) => {
+  try {
+    const response = await api.get(`${BASE_URL_RECIPES}/${id}/reviews`);
+    return response.data.data;
+  } catch (err) {
+    console.log("Error get recipe reviews");
+    throw err;
+  }
+};
