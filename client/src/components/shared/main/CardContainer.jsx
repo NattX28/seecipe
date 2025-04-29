@@ -42,7 +42,7 @@ const CardContainer = () => {
             title={recipe.title}
             user={recipe.user?.username}
             tags={recipe.tags?.map((tag) => tag)}
-            rating={recipe.averageRating}
+            rating={recipe.rating.average}
             cookTime={recipe.cookTime}
             servings={recipe.servings}
             image={recipe.mainImage || "/placeholder-recipe.jpg"}

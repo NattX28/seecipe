@@ -81,6 +81,25 @@ const NavbarUser = () => {
 
           {/* notification */}
           <NotificationDropdown />
+
+          {/* Add new recipe */}
+          <div
+            className="cursor-pointer transition-transform duration-100 hover:scale-[1.02]"
+            onClick={() => navigate("/create-recipe")}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={3}
+              stroke="currentColor"
+              className="size-6 text-third-color">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">

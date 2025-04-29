@@ -22,6 +22,7 @@ const formatRecipesForCards = (recipes) => {
       title: recipe.title,
       prepTime: recipe.prepTime,
       cookTime: recipe.cookTime,
+      servings: recipe.servings,
       user: recipe.user,
       mainImage: imageUrl || null,
       tags: simplifiedTags,

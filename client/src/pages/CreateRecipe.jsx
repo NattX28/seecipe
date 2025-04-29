@@ -313,7 +313,7 @@ const CreateRecipe = () => {
                 ))}
               </div>
 
-              <div className="flex">
+              <div className="flex gap-2">
                 <input
                   type="text"
                   placeholder="Add a tag (e.g. dessert, vegetarian)"
@@ -326,7 +326,7 @@ const CreateRecipe = () => {
                 />
                 <button
                   type="button"
-                  className="btn bg-second hover:bg-orange-600 text-white border-none rounded-l-none"
+                  className="btn  btn-accent "
                   onClick={handleAddTag}>
                   Add
                 </button>
@@ -436,7 +436,7 @@ const CreateRecipe = () => {
               <div className="flex justify-center mt-6">
                 <button
                   type="button"
-                  className="btn border-third text-third hover:bg-second hover:text-white hover:border-second transition-colors"
+                  className="btn btn-outline btn-accent rounded-full"
                   onClick={addIngredient}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -598,7 +598,7 @@ const CreateRecipe = () => {
               <div className="flex justify-center mt-6">
                 <button
                   type="button"
-                  className="btn border-third text-third hover:bg-second hover:text-white hover:border-second transition-colors"
+                  className="btn btn-outline btn-accent rounded-full"
                   onClick={addInstruction}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
