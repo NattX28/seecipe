@@ -34,7 +34,9 @@ const NotificationItem = ({ notification }) => {
       <a href="#" className="flex items-start p-2">
         <div className="flex-shrink-0">
           <img
-            src={notification.actor.profilePicture || "/images/chef.jpg"}
+            src={
+              notification.actor.profilePicture || "/images/profile_avatar.png"
+            }
             alt={notification.actor.username}
             className="w-10 h-10 rounded-full object-cover"
           />

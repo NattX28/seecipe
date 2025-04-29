@@ -52,7 +52,7 @@ const Review = ({ rating }) => {
               isHovered ? "shadow-lg" : ""
             }`}>
             <img
-              src={rating.user.profilePicture || "/images/chef.jpg"}
+              src={rating.user.profilePicture || "/images/profile_avatar.png"}
               alt={rating.user.username}
               className={`w-full h-full object-cover transition-all duration-300 ${
                 isHovered ? "scale-105" : ""

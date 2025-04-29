@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { getRecipeById, getRecipeReviews } from "../api/recipe";
 import Tag from "../components/shared/main/Tag";
 import ReviewContainer from "../components/shared/main/ReviewContainer";
 import ReviewModal from "../components/shared/auth/ReviewModal";
+import { navigateToProfile } from "./../utils/navigation";
+import { useAuthStore } from "./../store/authStore";
 
 const RecipeDetail = () => {
   const { id } = useParams();
@@ -11,6 +13,8 @@ const RecipeDetail = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
     const fetchRecipeDetail = async () => {
@@ -43,6 +47,11 @@ const RecipeDetail = () => {
 
   const handleReviewSubmitted = () => {
     fetchReviews();
+  };
+
+  const handleGoToProfile = (e) => {
+    e.stopPropagation();
+    navigateToProfile(navigate, recipe.user.id, user.userId);
   };
 
   if (loading)
@@ -161,11 +170,13 @@ const RecipeDetail = () => {
       <div className="flex w-full justify-between items-start gap-16 mt-16">
         <p className="text-lg">{recipe.description}</p>
 
-        <div className="card bg-white rounded-2xl w-56 h-56 mb-8 shadow-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
+        <div
+          className="card bg-white rounded-2xl w-56 h-56 mb-8 shadow-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
+          onClick={handleGoToProfile}>
           <div className="card-body items-center">
             <figure className="rounded-full w-32 h-32 shadow-xs transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
               <img
-                src={recipe.user.profilePicture || "/images/chef.jpg"}
+                src={recipe.user.profilePicture || "/images/profile_avatar.png"}
                 alt={recipe.user.username}
                 className="w-full h-full object-cover"
               />

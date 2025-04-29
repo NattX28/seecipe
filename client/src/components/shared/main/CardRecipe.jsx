@@ -31,7 +31,7 @@ const CardRecipe = ({
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate(`recipes/${id}`);
+    navigate(`/recipes/${id}`);
   };
 
   const handleFavoriteClick = (e) => {
@@ -80,8 +80,8 @@ const CardRecipe = ({
         </div>
         <div className="flex items-center gap-4">
           <span>{user}</span>
-          {tags.map((tag) => (
-            <Tag tagName={tag.name} size="sm" />
+          {tags.map((tag, index) => (
+            <Tag key={index} tagName={tag.name} size="sm" />
           ))}
         </div>
         <div className="flex items-center gap-4">

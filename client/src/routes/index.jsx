@@ -10,6 +10,7 @@ import RecipeDetail from "../pages/RecipeDetail";
 import FavoritePage from "../pages/FavoritePage";
 import ProtectedRoute from "./../components/shared/auth/ProtectedRoute";
 import CreateRecipe from "../pages/CreateRecipe";
+import ProfilePage from "../pages/ProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,14 @@ const router = createBrowserRouter([
             <FavoritePage />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "/profile",
+        element: <ProfilePage />,
+      },
+      {
+        path: "/profile/:id",
+        element: <ProfilePage />,
       },
     ],
   },

@@ -7,6 +7,7 @@ const {
 const router = express.Router();
 
 router.get("/profile", requiredAuthMiddleware, getProfile);
+router.get("/profile/:id", requiredAuthMiddleware, getProfile);
 router.post("/users/:id/follow", requiredAuthMiddleware, followUser);
 
 module.exports = router;

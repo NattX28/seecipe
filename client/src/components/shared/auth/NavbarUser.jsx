@@ -115,7 +115,7 @@ const NavbarUser = () => {
               <div>
                 <figure className="rounded-full w-12 h-12 shadow-xs transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
                   <img
-                    src={user.profilePicture || "/images/chef.jpg"}
+                    src={user.profilePicture || "/images/profile_avatar.png"}
                     alt={user.username}
                     className="w-full h-full object-cover rounded-full"
                   />
@@ -125,6 +125,9 @@ const NavbarUser = () => {
             <ul
               tabIndex={0}
               className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+              <li>
+                <a onClick={() => navigate("/profile")}>Profile</a>
+              </li>
               <li>
                 <a onClick={handleLogout}>Logout</a>
               </li>

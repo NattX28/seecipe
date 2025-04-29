@@ -27,6 +27,7 @@ const signup = async (req, res) => {
         username,
         email,
         passwordHash: hashPassword,
+        profilePicture: "profile_avatar.png",
       },
     });
 

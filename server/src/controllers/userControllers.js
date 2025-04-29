@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 const getProfile = async (req, res) => {
   try {
-    const userId = req.query.id || req.user.id;
+    const userId = req.params.id || req.user.id;
 
     if (!userId) {
       return res.status(400).json({ error: "User ID not found" });
