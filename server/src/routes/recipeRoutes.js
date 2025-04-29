@@ -43,7 +43,7 @@ router.get("/recipes/:id/reviews", optionalAuthMiddleware, getReviews);
 router.post("/recipes/:id/rate", requiredAuthMiddleware, rateRecipe);
 router.post("/recipes/:id/comments", requiredAuthMiddleware, commentOnRecipe);
 router.post("/recipes/:id/favorite", requiredAuthMiddleware, saveToFavorites);
-router.get("/favorites", requiredAuthMiddleware, getFavorites);
+router.get("/favorites", optionalAuthMiddleware, getFavorites);
 router.get("/tags", getAllTags);
 router.get("/tags/:id", getTagById);
 
