@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router";
 import { useAuthStore } from "../store/authStore";
 import { useEffect, useState } from "react";
-import { followUser, getProfile } from "./../api/user";
+import { checkIfFollow, followUser, getProfile } from "./../api/user";
 import CardRecipe from "../components/shared/main/CardRecipe";
 import { useRecipeStore } from "../store/recipeStore";
 
@@ -12,6 +12,7 @@ const ProfilePage = () => {
   const { toggleFavorite, isFavorite } = useRecipeStore();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("recipes");
 
@@ -21,6 +22,11 @@ const ProfilePage = () => {
         setLoading(true);
         const endpoint = id ? `profile/${id}` : "/profile";
         const response = await getProfile(endpoint);
+        let checkFollow;
+        if (id) {
+          checkFollow = await checkIfFollow(id);
+          response.isFollowing = checkFollow.data.isFollowing;
+        }
         setProfileData(response);
         setLoading(false);
       } catch (err) {
@@ -42,13 +48,15 @@ const ProfilePage = () => {
 
     const response = await followUser(profileData.id);
 
+    const checkFollow = await checkIfFollow(profileData.id);
+
     // Update follower count based on the response
     setProfileData((prev) => ({
       ...prev,
       followersCount: response.data.isFollowing
         ? prev.followersCount + 1
         : prev.followersCount - 1,
-      isFollowing: response.data.isFollowing,
+      isFollowing: checkFollow.data.isFollowing,
     }));
 
     try {
@@ -88,18 +96,19 @@ const ProfilePage = () => {
   return (
     <div>
       {/* Profile Header */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="flex flex-col md:flex-row item-center md:items-start gap-6">
+      <div className="p-6 my-6">
+        <div className="flex flex-col justify-center items-center gap-6">
           {/* Profile Pricture */}
-          <div className="w-24 h-24 md:w-32 md:h-32">
+          <div className="w-24 h-24 md:w-32 md:h-32 ">
             <img
               src={profileData.profilePicture || "/images/profile_avatar.png"}
               alt={`${profileData.username}'s profile`}
+              className="rounded-full"
             />
           </div>
 
           {/* User Info */}
-          <div className="flex-1 text-center mdd:text-left">
+          <div className="flex-1 text-center">
             <h1 className="text-2xl font-bold">{profileData.username}</h1>
             <p className="text-gray-500">
               Member since{" "}
@@ -107,7 +116,7 @@ const ProfilePage = () => {
             </p>
 
             {/* Stats */}
-            <div className="flex justify-center md:justify-start gap-6 mt-6">
+            <div className="flex justify-center gap-6 mt-6">
               <div className="text-center">
                 <p className="font-bold">{profileData.recipeCount}</p>
                 <p className="text-sm text-gray-500">Recipes</p>
@@ -126,13 +135,56 @@ const ProfilePage = () => {
             {!profileData.isOwnProfile && (
               <div className="mt-4">
                 <button
-                  onClick={handleFollow}
-                  className={`px-4 py-2 rounded-full ${
-                    profileData.isFollowing
-                      ? "bg-gray-500 text-gray-800"
-                      : "bg-second text-white"
-                  } font-medium`}>
-                  {profileData.isFollowing ? "Following" : "Follow"}
+                  onClick={async () => {
+                    setIsFollowLoading(true);
+                    await handleFollow();
+                    setTimeout(() => setIsFollowLoading(false), 400); // delay เพื่อให้รู้สึก soft
+                  }}
+                  disabled={isFollowLoading}
+                  className={`relative px-6 py-2 rounded-full font-semibold text-sm shadow-inner transition-all duration-300 ease-in-out
+        ${
+          isFollowLoading
+            ? "bg-gray-200 text-gray-400 cursor-wait"
+            : profileData.isFollowing
+            ? "bg-second text-white hover:bg-orange-600"
+            : "bg-second text-white hover:bg-orange-600"
+        }`}>
+                  {isFollowLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="loading loading-spinner loading-md text-second" />
+                      <span className="text-second">Loading...</span>
+                    </span>
+                  ) : profileData.isFollowing ? (
+                    <span className="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-white"
+                        viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path
+                          fillRule="evenodd"
+                          d="M3.172 4.828a4 4 0 015.656 0L10 6.343l1.172-1.515a4 4 0 015.656 5.656L10 14.828 3.172 10.99a4 4 0 010-5.656z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Following
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-white"
+                        viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path
+                          fillRule="evenodd"
+                          d="M3.172 4.828a4 4 0 015.656 0L10 6.343l1.172-1.515a4 4 0 015.656 5.656L10 14.828 3.172 10.99a4 4 0 010-5.656z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Follow
+                    </span>
+                  )}
                 </button>
               </div>
             )}
@@ -141,12 +193,12 @@ const ProfilePage = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b mb-6">
+      <div className="flex justify-center border-b mb-6 border-third">
         <button
           className={`px-4 py-2 ${
             activeTab === "recipes"
-              ? "border-b-2 border-blue-500 text-blue-500"
-              : "text-gray-600"
+              ? "border-b-2 border-third text-third-color cursor-pointer"
+              : "text-gray-600 cursor-pointer"
           }`}
           onClick={() => setActiveTab("recipes")}>
           Recipes
@@ -154,8 +206,8 @@ const ProfilePage = () => {
         <button
           className={`px-4 py-2 ${
             activeTab === "favorites"
-              ? "border-b-2 border-blue-500 text-blue-500"
-              : "text-gray-600"
+              ? "border-b-2 border-third text-third-color cursor-pointer"
+              : "text-gray-600 cursor-pointer"
           }`}
           onClick={() => setActiveTab("favorites")}>
           Favorites

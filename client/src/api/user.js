@@ -19,3 +19,13 @@ export const followUser = async (id) => {
     throw err;
   }
 };
+
+export const checkIfFollow = async (id) => {
+  try {
+    const response = await api.get(`/follow/check/${id}`);
+    return response;
+  } catch (error) {
+    console.error("Error check if follow: ", err);
+    throw err;
+  }
+};

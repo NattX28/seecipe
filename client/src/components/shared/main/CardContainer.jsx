@@ -81,7 +81,7 @@ const CardContainer = () => {
           nextLinkClassName="flex items-center justify-center w-full h-full"
           breakClassName="join-item btn btn-sm"
           breakLinkClassName="flex items-center justify-center w-full h-full"
-          activeClassName="btn-primary"
+          activeClassName="btn-warning "
           disabledClassName="btn-disabled"
           marginPagesDisplayed={1}
           pageRangeDisplayed={3}

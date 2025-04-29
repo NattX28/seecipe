@@ -41,7 +41,7 @@ const getProfile = async (req, res) => {
                   },
                 },
               },
-              take: 3,
+              take: 2,
             },
             images: {
               select: {
@@ -91,7 +91,7 @@ const getProfile = async (req, res) => {
                       },
                     },
                   },
-                  take: 3,
+                  take: 2,
                 },
                 images: {
                   select: {
@@ -219,4 +219,32 @@ const followUser = async (req, res) => {
   }
 };
 
-module.exports = { getProfile, followUser };
+const checkIfFollow = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const followerUserId = req.user.id;
+    const followingUserId = parseInt(id);
+
+    // not check self, it just check only status
+
+    const existingFollow = await prisma.follow.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId: followerUserId,
+          followingId: followingUserId,
+        },
+      },
+    });
+
+    const isFollowing = !!existingFollow;
+
+    return res.status(200).json({ isFollowing });
+  } catch (err) {
+    console.error("Error checking follow status:", err);
+    res
+      .status(500)
+      .json({ message: "Error checking follow status", error: err.message });
+  }
+};
+
+module.exports = { getProfile, followUser, checkIfFollow };
